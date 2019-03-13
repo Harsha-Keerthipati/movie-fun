@@ -75,16 +75,6 @@ public class AlbumsController {
         return new HttpEntity<>(imageBytes, headers);
     }
 
-    private void saveUploadToFile(@RequestParam("file") MultipartFile uploadedFile, File targetFile) throws IOException {
-        targetFile.delete();
-        targetFile.getParentFile().mkdirs();
-        targetFile.createNewFile();
-
-        try (FileOutputStream outputStream = new FileOutputStream(targetFile)) {
-            outputStream.write(uploadedFile.getBytes());
-        }
-    }
-
     private HttpHeaders createImageHttpHeaders(Path coverFilePath, byte[] imageBytes) throws IOException {
         String contentType = new Tika().detect(coverFilePath);
 
@@ -92,12 +82,6 @@ public class AlbumsController {
         headers.setContentType(MediaType.parseMediaType(contentType));
         headers.setContentLength(imageBytes.length);
         return headers;
-    }
-
-
-    private File getCoverFile(@PathVariable long albumId) {
-        String coverFileName = getCoverFileName(albumId);
-        return new File(coverFileName);
     }
 
     private Path getExistingCoverPath(@PathVariable long albumId) throws URISyntaxException {
